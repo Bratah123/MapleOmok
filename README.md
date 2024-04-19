@@ -1,2 +1,2 @@
-# PokemonGen1Minimax
-Pokemon Gen 1 Simulator
+# MapleOmok
+MapleOmok is a recreation of the Omok board game that MapleStory has in python.
