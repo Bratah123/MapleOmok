@@ -1,2 +1,2 @@
 # MapleOmok
-MapleOmok is a recreation of the Omok board game that MapleStory has in python.
+MapleOmok is a recreation of the MapleStory Omok mini-game written in python/pygame.
