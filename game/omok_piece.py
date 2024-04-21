@@ -8,6 +8,7 @@ from components.base_component import BaseComponent
 class OmokPiece(BaseComponent):
     def __init__(self, piece_type="SlimePiece.png"):
         super().__init__()
+        self.piece_type = piece_type
         self._image = pygame.image.load(Path("assets", "game", piece_type)).convert_alpha()
         self._rect = self._image.get_rect()
         # Scale the piece to 28x28 pixels to fit the board

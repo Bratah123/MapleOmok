@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from components.base_component import BaseComponent
 from components.render_priority import RenderPriority
@@ -81,8 +82,10 @@ class OmokBoard(BaseComponent):
         self.opponent_turn_sign.draw(screen)
 
     def update(self) -> None:
-        # Check for any clicks on the board
-        pass
+        # If it is opponent's turn, play a random move
+        if not self.my_turn and not self.winner:
+            self.opponent_turn()
+            self.my_turn = True
 
     def handle_events(self, event) -> None:
         if self.winner:
@@ -95,7 +98,7 @@ class OmokBoard(BaseComponent):
         for index, board_location in enumerate(self.board_locations):
             if board_location.collidepoint(position):
                 if self.place_piece(index, "SlimePiece.png"):
-                    # self.my_turn = not self.my_turn
+                    self.my_turn = not self.my_turn
                     if self.check_winner():
                         self.winner = True
                     pass
@@ -146,20 +149,23 @@ class OmokBoard(BaseComponent):
 
     def check_horizontal(self, piece: OmokPiece) -> bool:
         """
-        Check if there are five consecutive pieces horizontally.
+        Check if there are five consecutive pieces of the same type horizontally.
         :param piece:
         :return:
         """
         count = 0
         self._winning_pieces = [piece.board_position]
+        board_positions = [p.board_position for p in self._pieces if piece.piece_type.lower() == p.piece_type.lower()]
+
         for i in range(1, 5):
-            if piece.board_position + i * PIECE_RIGHT_OFFSET in [p.board_position for p in self._pieces]:
+            if piece.board_position + i * PIECE_RIGHT_OFFSET in board_positions:
+                # Check if the piece is the same type
                 count += 1
                 self._winning_pieces.append(piece.board_position + i * PIECE_RIGHT_OFFSET)
             else:
                 break
         for i in range(1, 5):
-            if piece.board_position + i * PIECE_LEFT_OFFSET in [p.board_position for p in self._pieces]:
+            if piece.board_position + i * PIECE_LEFT_OFFSET in board_positions:
                 count += 1
                 self._winning_pieces.append(piece.board_position + i * PIECE_LEFT_OFFSET)
             else:
@@ -175,6 +181,7 @@ class OmokBoard(BaseComponent):
         count = 0
         column_range = ()
         self._winning_pieces = [piece.board_position]
+        board_positions = [p.board_position for p in self._pieces if piece.piece_type.lower() == p.piece_type.lower()]
 
         for column in COLUMN_INDEX:
             if piece.board_position in range(column[0], column[1] + 1):
@@ -182,14 +189,14 @@ class OmokBoard(BaseComponent):
                 break
 
         for i in range(1, 5):
-            if piece.board_position + i * PIECE_DOWN_OFFSET in [p.board_position for p in self._pieces]:
+            if piece.board_position + i * PIECE_DOWN_OFFSET in board_positions:
                 if piece.board_position + i * PIECE_DOWN_OFFSET in range(column_range[0], column_range[1] + 1):
                     count += 1
                     self._winning_pieces.append(piece.board_position + i * PIECE_DOWN_OFFSET)
             else:
                 break
         for i in range(1, 5):
-            if piece.board_position + i * PIECE_UP_OFFSET in [p.board_position for p in self._pieces]:
+            if piece.board_position + i * PIECE_UP_OFFSET in board_positions:
                 if piece.board_position + i * PIECE_UP_OFFSET in range(column_range[0], column_range[1] + 1):
                     count += 1
                     self._winning_pieces.append(piece.board_position + i * PIECE_UP_OFFSET)
@@ -206,17 +213,16 @@ class OmokBoard(BaseComponent):
         """
         count = 0
         self._winning_pieces = [piece.board_position]
+        board_positions = [p.board_position for p in self._pieces if piece.piece_type.lower() == p.piece_type.lower()]
 
         for i in range(1, 5):
-            if piece.board_position + i * PIECE_DOWN_OFFSET + i * PIECE_RIGHT_OFFSET in [p.board_position for p in
-                                                                                         self._pieces]:
+            if piece.board_position + i * PIECE_DOWN_OFFSET + i * PIECE_RIGHT_OFFSET in board_positions:
                 count += 1
                 self._winning_pieces.append(piece.board_position + i * PIECE_DOWN_OFFSET + i * PIECE_RIGHT_OFFSET)
             else:
                 break
         for i in range(1, 5):
-            if piece.board_position + i * PIECE_UP_OFFSET + i * PIECE_LEFT_OFFSET in [p.board_position for p in
-                                                                                      self._pieces]:
+            if piece.board_position + i * PIECE_UP_OFFSET + i * PIECE_LEFT_OFFSET in board_positions:
                 count += 1
                 self._winning_pieces.append(piece.board_position + i * PIECE_UP_OFFSET + i * PIECE_LEFT_OFFSET)
             else:
@@ -231,22 +237,31 @@ class OmokBoard(BaseComponent):
         """
         count = 0
         self._winning_pieces = [piece.board_position]
+        board_positions = [p.board_position for p in self._pieces if piece.piece_type.lower() == p.piece_type.lower()]
 
         for i in range(1, 5):
-            if piece.board_position + i * PIECE_UP_OFFSET + i * PIECE_RIGHT_OFFSET in [p.board_position for p in
-                                                                                       self._pieces]:
+            if piece.board_position + i * PIECE_UP_OFFSET + i * PIECE_RIGHT_OFFSET in board_positions:
                 count += 1
                 self._winning_pieces.append(piece.board_position + i * PIECE_UP_OFFSET + i * PIECE_RIGHT_OFFSET)
             else:
                 break
         for i in range(1, 5):
-            if piece.board_position + i * PIECE_DOWN_OFFSET + i * PIECE_LEFT_OFFSET in [p.board_position for p in
-                                                                                        self._pieces]:
+            if piece.board_position + i * PIECE_DOWN_OFFSET + i * PIECE_LEFT_OFFSET in board_positions:
                 count += 1
                 self._winning_pieces.append(piece.board_position + i * PIECE_DOWN_OFFSET + i * PIECE_LEFT_OFFSET)
             else:
                 break
         return count >= 4
+
+    def opponent_turn(self) -> None:
+        """
+        Make a random move for the opponent.
+        :return:
+        """
+        # TODO: Add minimax algorithm for the opponent
+        available_positions = [i for i in range(225) if i not in [piece.board_position for piece in self._pieces]]
+        random_position = random.choice(available_positions)
+        self.place_piece(random_position, "MushroomPiece.png")
 
     def reset_board(self) -> None:
         """
