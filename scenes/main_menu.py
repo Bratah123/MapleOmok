@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pygame
-
 from components.base_scene import BaseScene
 from components.static_image import StaticImage
 from interactables.button import TextButton
