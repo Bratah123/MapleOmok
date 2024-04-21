@@ -34,8 +34,9 @@ class BaseText(BaseComponent):
         pass
 
     def update_color(self, color):
-        self.color = color
-        self.text = self.font.render(self.message, self.anti_alias, self.color)
+        if color != self.color:
+            self.color = color
+            self.text = self.font.render(self.message, self.anti_alias, self.color)
 
 
 class MultilineBaseText:
