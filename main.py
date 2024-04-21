@@ -9,6 +9,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((1000, 700))
+        self.icon = pygame.image.load("./assets/game/SlimePiece.png")
         pygame.display.set_caption("MapleStory Omok")
         self.running = True
 
@@ -19,6 +20,8 @@ class Game:
         self.switch_scenes("MainMenu")
 
     def run(self):
+        pygame.display.set_icon(self.icon)
+
         clock = pygame.time.Clock()
         while self.running:
             clock.tick(FPS_CAP)

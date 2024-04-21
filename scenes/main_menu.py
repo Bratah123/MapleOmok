@@ -45,7 +45,5 @@ class MainMenu(BaseScene):
         pass
 
     def on_click_play(self):
-        print("Play button clicked!")
-
-    def on_click_high_score(self):
-        print("High Score button clicked!")
+        # Switch to the game scene
+        self.game.switch_scenes("GameScene")
