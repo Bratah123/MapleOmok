@@ -49,6 +49,7 @@ class OpponentAI:
         if depth == 0 or board.check_winner():
             score = self.evaluate(board)
             return score, best_move
+        
         if is_maximizer:
             for avail_move in board.get_available_moves_near_piece(piece=last_player_move):
                 board.place_piece(avail_move, "MushroomPiece.png")
@@ -62,7 +63,6 @@ class OpponentAI:
                 alpha = max(alpha, best_score)
                 if alpha >= beta:
                     break
-
         else:
             for avail_move in board.get_available_moves_near_piece(piece=last_player_move):
                 board.place_piece(avail_move, "SlimePiece.png")
